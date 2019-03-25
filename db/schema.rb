@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(version: 2019_03_25_220443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "locations", force: :cascade do |t|
     t.string "address1"
@@ -21,8 +22,11 @@ ActiveRecord::Schema.define(version: 2019_03_25_220443) do
     t.string "city"
     t.string "state"
     t.integer "zip_code"
+    t.geography "lonlat", limit: {:srid=>4326, :type=>"st_point", :geographic=>true}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["address1"], name: "index_locations_on_address1"
+    t.index ["lonlat"], name: "index_locations_on_lonlat", using: :gist
   end
 
 end
