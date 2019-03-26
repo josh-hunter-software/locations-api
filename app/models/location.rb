@@ -10,13 +10,6 @@ class Location < ApplicationRecord
   private
 
     def populate_lonlat
-      uri = URI("https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=#{address1.gsub(' ', '+')},+#{city},+#{state}+#{zip_code}&benchmark=Public_AR_Current&format=json")
-      response = JSON.parse(Net::HTTP.get(uri))["result"]
-      matches = response["addressMatches"]
-      if matches
-        location = matches.first['coordinates']
-        coordinates = "POINT(#{location.values.join(' ')})"
-        update_column(:lonlat, coordinates)
-      end
+      LonlatWorker.perform_async(id)
     end
 end
