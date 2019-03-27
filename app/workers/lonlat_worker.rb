@@ -8,8 +8,10 @@ class LonlatWorker
     matches = response["addressMatches"]
     if matches
       location_hash = matches.first['coordinates']
-      coordinates = "POINT(#{location_hash.values.join(' ')})"
-      location.update_column(:lonlat, coordinates)
+      longitude = location_hash['x']
+      latitude = location_hash['y']
+      coordinates = "POINT(#{longitude} #{latitude})"
+      location.update_columns(lonlat: coordinates, longitude: longitude, latitude: latitude)
     end
   end
 end
